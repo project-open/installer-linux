@@ -1,0 +1,2 @@
+NaviServer will store both access and error logs in this folder.
+You can change the folder in ~/etc/config.tcl -> log.
