@@ -1,0 +1,9 @@
+[user]
+	email = info@project-open.com
+	name = Project Open
+[credential]
+	helper = cache --timeout 3600
+[pull]
+	rebase = false
+[core]
+	excludesfile = /web/projop/.gitignore_global
