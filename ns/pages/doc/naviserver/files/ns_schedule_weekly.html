@@ -1,0 +1,80 @@
+
+<html><head>
+<title>ns_schedule_weekly - NaviServer Built-in Commands</title>
+<link rel="stylesheet" href="../man.css" type="text/css">
+</head>
+<! -- Generated from file '/usr/local/src/naviserver/doc/html/naviserver/files/ns_schedule_weekly.html' by tcllib/doctools with format 'html'
+   -->
+<! -- CVS: $Id$ ns_schedule_weekly.n
+   -->
+<body><div class="doctools">
+<div id="man-header">
+  <a href="http://wiki.tcl.tk/2090"><img
+     src="http://naviserver.sourceforge.net/ns-icon-16.png"> <strong>NaviServer</strong></a>
+  - programmable web server
+</div>
+<br>
+<hr> [
+  <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+] <hr>
+<h1 class="title">ns_schedule_weekly(n) 4.99.8 naviserver &quot;NaviServer Built-in Commands&quot;</h1>
+<div id="name" class="section"><h2><a name="name">Name</a></h2>
+<p>ns_schedule_weekly - Schedule a script to run on a certain day of the week at a certain time</p>
+</div>
+<div id="toc" class="section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="toc">
+<li class="section"><a href="#toc">Table Of Contents</a></li>
+<li class="section"><a href="#synopsis">Synopsis</a></li>
+<li class="section"><a href="#section1">Description</a></li>
+<li class="section"><a href="#section2">COMMANDS</a></li>
+<li class="section"><a href="#section3">EXAMPLES</a></li>
+<li class="section"><a href="#see-also">See Also</a></li>
+<li class="section"><a href="#keywords">Keywords</a></li>
+</ul>
+</div>
+<div id="synopsis" class="section"><h2><a name="synopsis">Synopsis</a></h2>
+<div class="synopsis">
+<ul class="syntax">
+<li><a href="#1"><b class="cmd">ns_schedule_weekly</b> <span class="opt">?<i class="arg">-once</i>?</span> <span class="opt">?<i class="arg">-thread</i>?</span> <i class="arg">day</i> <i class="arg">hour</i> <i class="arg">minute</i> <i class="arg">script</i></a></li>
+</ul>
+</div>
+</div>
+<div id="section1" class="section"><h2><a name="section1">Description</a></h2>
+<p>This command schedules a script to be run on a certain day of the week at a
+certain hour and minute of that day.  Returns the ID of the newly scheduled script.
+The week starts on Sunday as day zero and runs to Saturday as day six.  If -once is
+specified, then the script is run once and then unscheduled, otherwise it will continue
+to run every week on that day at that time.  If -thread is specified, then the script
+will be run in its own thread, otherwise it will run in the scheduler's thread.  If
+the script is long-running, this may interfere with the running of other scheduled
+scripts, so long-running scripts should be run in their own threads.
+NOTE: day, hour and minute are specified in local time.  Beware of Daylight Savings Time
+shifts affecting the time of day when the script will execute.</p>
+</div>
+<div id="section2" class="section"><h2><a name="section2">COMMANDS</a></h2>
+<dl class="definitions">
+<dt><a name="1"><b class="cmd">ns_schedule_weekly</b> <span class="opt">?<i class="arg">-once</i>?</span> <span class="opt">?<i class="arg">-thread</i>?</span> <i class="arg">day</i> <i class="arg">hour</i> <i class="arg">minute</i> <i class="arg">script</i></a></dt>
+<dd></dd>
+</dl>
+</div>
+<div id="section3" class="section"><h2><a name="section3">EXAMPLES</a></h2>
+<pre class="example">
+   % set id [[ns_schedule_weekly -once 2 5 35 { ns_log notice &quot;It is now Tuesday at 5:35 AM.&quot; }]]
+   123
+</pre>
+<pre class="example">
+   % ns_unschedule_proc $id
+</pre>
+</div>
+<div id="see-also" class="section"><h2><a name="see-also">See Also</a></h2>
+<p><a href="../../index.html#key3">nsd</a></p>
+</div>
+<div id="keywords" class="section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key62">ns_after</a>, <a href="../../index.html#key18">ns_info</a>, <a href="../../index.html#key20">ns_pause</a>, <a href="../../index.html#key61">ns_resume</a>, <a href="../../index.html#key63">ns_schedule_daily</a>, <a href="../../index.html#key60">ns_schedule_proc</a>, <a href="../../index.html#key21">ns_unschedule_proc</a>, <a href="../../index.html#key19">scheduled</a></p>
+</div>
+<div id="man-footer">
+  
+</div>
+</div></body></html>

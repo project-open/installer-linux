@@ -1,0 +1,178 @@
+
+<html><head>
+<title>nssock - NaviServer Module Commands</title>
+<link rel="stylesheet" href="../man.css" type="text/css">
+</head>
+<! -- Generated from file '/usr/local/src/naviserver/doc/html/nssock/files/nssock.html' by tcllib/doctools with format 'html'
+   -->
+<! -- CVS: $Id$ nssock.n
+   -->
+<body><div class="doctools">
+<div id="man-header">
+  <a href="http://wiki.tcl.tk/2090"><img
+     src="http://naviserver.sourceforge.net/ns-icon-16.png"> <strong>NaviServer</strong></a>
+  - programmable web server
+</div>
+<br>
+<hr> [
+  <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+] <hr>
+<h1 class="title">nssock(n) 4.99.8 nssock &quot;NaviServer Module Commands&quot;</h1>
+<div id="name" class="section"><h2><a name="name">Name</a></h2>
+<p>nssock - Configuring http socket communications</p>
+</div>
+<div id="toc" class="section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="toc">
+<li class="section"><a href="#toc">Table Of Contents</a></li>
+<li class="section"><a href="#section1">Description</a></li>
+<li class="section"><a href="#section2">CONFIGURATION</a></li>
+<li class="section"><a href="#section3">EXAMPLES</a></li>
+<li class="section"><a href="#see-also">See Also</a></li>
+<li class="section"><a href="#keywords">Keywords</a></li>
+</ul>
+</div>
+<div id="section1" class="section"><h2><a name="section1">Description</a></h2>
+<p>This module <i class="term"><a href="../../index.html#key54">nssock</a></i> is used for the socket communication for http. For
+the communication via https, the module <i class="term"><a href="../../index.html#key132">nsssl</a></i> is used, which shares
+the configuration parameters presented here and adds additional parameters.</p>
+<p>The module <i class="term"><a href="../../index.html#key54">nssock</a></i> is typically loaded per server, e.g. for
+<i class="term">server1</i>:</p>
+<pre class="example">
+   ns_section ns/server/server1/modules
+   ns_param   nssock   nssock.so
+ 
+   ns_section ns/server/server1/module/nssock
+   ns_param port 8000
+   ...
+</pre>
+<p>This amount of configuration is sufficient for many installations, which
+do not want to run the server on port 80 (which requires as well root
+permissions for starting).</p>
+</div>
+<div id="section2" class="section"><h2><a name="section2">CONFIGURATION</a></h2>
+<p>The module <i class="term"><a href="../../index.html#key54">nssock</a></i> provides a rich set of configuration options, which
+are important for large installation. However, all parameters are
+equipped with sensible default values, such that none of these are required.</p>
+<dl class="definitions">
+<dt>acceptsize</dt>
+<dd><p>Maximum number of requests accepted at once (integer, defaults to
+the value <i class="term">backlog</i>)</p></dd>
+<dt>address</dt>
+<dd><p>IP-Address on which the server should listen (default: 0.0.0.0)</p></dd>
+<dt>backlog</dt>
+<dd><p>Maximum number of entries for waiting listen connections (integer,
+default: 256)</p></dd>
+<dt>bufsize</dt>
+<dd><p>Maximum size in bytes (octets) for a single receive operation
+(integer, 16384)</p></dd>
+<dt>closewait</dt>
+<dd><p>Timeout in seconds for close on socket to drain potential garbage if
+no keep alive is performed. (integer, default: 2)</p></dd>
+<dt>defaultserver</dt>
+<dd><p>When virtual servers are defined, this refers to the default server
+(the server, receiving all urls not mapped to a specific server)</p></dd>
+<dt>deferaccept</dt>
+<dd><p>TCP Performance option; use TCP_FASTOPEN or TCP_DEFER_ACCEPT or
+SO_ACCEPTFILTER, whatever is available in your operating system to
+improve the performance of the initial TCP 3-way handshake. The
+capabilities of the operating system are determined at compile time.
+If you want to use TCP_FASTOPEN (introduced by Linux kernel 3.7.0), 
+you might have to activate this option in your kernel, 
+by using</p>
+<pre class="example">
+   sudo sysctl net.ipv4.tcp_fastopen=1
+</pre>
+<p>(boolean, default: false)</p></dd>
+<dt>hostname</dt>
+<dd><p>Hostname of the server, can be looked up automatically if not specified.</p></dd>
+<dt>keepalivemaxdownloadsize</dt>
+<dd><p>Don't allow keep-alive for downloads content larger than this size in
+bytes; a value of 0 means that this feature is deactivated (integer, default 0)</p></dd>
+<dt>keepalivemaxuploadsize</dt>
+<dd><p>Don't allow keep-alive for upload content larger than this size in
+bytes; a value of 0 means that this feature is deactivated (integer, default 0)</p></dd>
+<dt>keepwait</dt>
+<dd><p>Timeout in seconds for keep-alive. (integer, default: 5)</p></dd>
+<dt>location</dt>
+<dd><p>Provide a default for protocol://hostname[:port]. Useful
+for virtual servers.</p></dd>
+<dt>maxheaders</dt>
+<dd><p>Maximum number of header lines (integer, 128)</p></dd>
+<dt>maxinput</dt>
+<dd><p>Maximum size in bytes (octets) for content loaded into the server, such as upload of
+files. (integer, default: 1048576)</p></dd>
+<dt>maxline</dt>
+<dd><p>Maximum size in bytes (octets) of a single header line (integer,
+default: 8192)</p></dd>
+<dt>maxqueuesize</dt>
+<dd><p>Size of the queue of accepted requests waiting for a connection thread
+(integer, default 1024).</p></dd>
+<dt>maxupload</dt>
+<dd><p>When spooler threads are activated, use spooler threads for uploads
+larger than this size in bytes (see as well <i class="term">spoolerthreads</i>)</p></dd>
+<dt>nodelay</dt>
+<dd><p>TCP Performance option; use TCP_NODELAY (OS-default on
+Linux). (boolean, default: false)</p></dd>
+<dt>port</dt>
+<dd><p>Port, on which the server listens. When the port is specified as 0,
+the module with its defined commands (such as <b class="cmd"><a href="../../naviserver/files/ns_http.html">ns_http</a></b> is
+loaded, but the driver will not be listening on any port.
+(integer, default: 80)</p></dd>
+<dt>extraheaders</dt>
+<dd><p>This parameter can be used to add extra response headers
+for every reponse sent over this driver. The extraheaders
+have the form for attribute/value pairs. This mechanism can be used
+to implement for example HTTP Strict Transport Security in 
+nsssl, which uses the same parameter definition.</p></dd>
+<dt>readahead</dt>
+<dd><p>Maximum size in bytes (octets) for asynchronous read ahead operations
+(integer, defaults to <i class="term">bufsize</i>)</p></dd>
+<dt>recvwait</dt>
+<dd><p>Timeout in seconds for receive operations. (integer, default: 30)</p></dd>
+<dt>sendwait</dt>
+<dd><p>Timeout in seconds for send operations. (integer, default: 30)</p></dd>
+<dt>spoolerthreads</dt>
+<dd><p>Number of spooler threads, which spool uploads to a file rather than
+to memory; see as well <i class="term">maxupload</i> (integer, default: 0)</p></dd>
+<dt>uploadpath</dt>
+<dd><p>Directory for uploads, defaults to the setting of <i class="term">ns/parameter tmpdir</i>.</p></dd>
+<dt>writerbufsize</dt>
+<dd><p>Buffer size in bytes (octets) for writer threads (integer, default: 8192)</p></dd>
+<dt>writersize</dt>
+<dd><p>Use writer threads for replies above this size. (integer, default: 1048576)</p></dd>
+<dt>writerstreaming</dt>
+<dd><p>Use writer threads for streaming HTML output
+(e.g. ns_write ...). (boolean, default: false)</p></dd>
+<dt>writerthreads</dt>
+<dd><p>Number of writer threads. (integer, default: 0)</p></dd>
+</dl>
+</div>
+<div id="section3" class="section"><h2><a name="section3">EXAMPLES</a></h2>
+<p>In case, one requires for one naviserver to listen on several ports, 
+it is possible to load the nssock module twice with different names,
+here <i class="term">nssock1</i> and <i class="term">nssock2</i>.</p>
+<pre class="example">
+   ns_section ns/server/server1/modules
+   ns_param   nssock1   nssock.so
+   ns_param   nssock2   nssock.so
+ 
+   ns_section ns/server/server1/module/nssock1
+   ns_param   port    8000
+   
+   ns_section ns/server/server1/module/nssock2
+   ns_param   port    8001
+</pre>
+<p>More to come here...</p>
+</div>
+<div id="see-also" class="section"><h2><a name="see-also">See Also</a></h2>
+<p><a href="../../naviserver/files/ns_http.html">ns_http</a>, <a href="../../naviserver/files/ns_log.html">ns_log</a>, ns_ssl, <a href="../../naviserver/files/ns_write.html">ns_write</a></p>
+</div>
+<div id="keywords" class="section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key133">TCP</a>, <a href="../../index.html#key130">TCP_FASTOPEN</a>, <a href="../../index.html#key9">configuration</a>, <a href="../../index.html#key108">driver</a>, <a href="../../index.html#key54">nssock</a>, <a href="../../index.html#key132">nsssl</a>, <a href="../../index.html#key131">performance</a>, <a href="../../index.html#key129">tuning</a></p>
+</div>
+<div id="man-footer">
+  
+</div>
+</div></body></html>

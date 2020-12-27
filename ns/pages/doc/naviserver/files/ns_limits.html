@@ -1,0 +1,205 @@
+
+<html><head>
+<title>ns_limits - NaviServer Built-In Commands</title>
+<link rel="stylesheet" href="../man.css" type="text/css">
+</head>
+<! -- Generated from file '/usr/local/src/naviserver/doc/html/naviserver/files/ns_limits.html' by tcllib/doctools with format 'html'
+   -->
+<! -- CVS: $Id$ ns_limits.n
+   -->
+<body><div class="doctools">
+<div id="man-header">
+  <a href="http://wiki.tcl.tk/2090"><img
+     src="http://naviserver.sourceforge.net/ns-icon-16.png"> <strong>NaviServer</strong></a>
+  - programmable web server
+</div>
+<br>
+<hr> [
+  <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+] <hr>
+<h1 class="title">ns_limits(n) 4.99.8 naviserver &quot;NaviServer Built-In Commands&quot;</h1>
+<div id="name" class="section"><h2><a name="name">Name</a></h2>
+<p>ns_limits - Connection request resource limits</p>
+</div>
+<div id="toc" class="section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="toc">
+<li class="section"><a href="#toc">Table Of Contents</a></li>
+<li class="section"><a href="#synopsis">Synopsis</a></li>
+<li class="section"><a href="#section1">Description</a></li>
+<li class="section"><a href="#section2">COMMANDS</a></li>
+<li class="section"><a href="#section3">CONFIGURATION</a></li>
+<li class="section"><a href="#section4">EXAMPLES</a></li>
+<li class="section"><a href="#see-also">See Also</a></li>
+<li class="section"><a href="#keywords">Keywords</a></li>
+</ul>
+</div>
+<div id="synopsis" class="section"><h2><a name="synopsis">Synopsis</a></h2>
+<div class="synopsis">
+<ul class="syntax">
+<li><a href="#1"><b class="cmd">ns_limits_set</b> <span class="opt">?<b class="option">-maxrun    <i class="arg">n</i></b>?</span> <span class="opt">?<b class="option">-maxwait   <i class="arg">n</i></b>?</span> <span class="opt">?<b class="option">-maxupload <i class="arg">n</i></b>?</span> <span class="opt">?<b class="option">-timeout   <i class="arg">t</i></b>?</span> <span class="opt">?--?</span> <i class="arg">limit</i></a></li>
+<li><a href="#2"><b class="cmd">ns_limits_get</b> <i class="arg">limit</i></a></li>
+<li><a href="#3"><b class="cmd">ns_limits_register</b> <span class="opt">?<b class="option">-noinherit <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-server    <i class="arg">s</i></b>?</span> <span class="opt">?--?</span> <i class="arg">limit</i> <i class="arg">method</i> <i class="arg">url</i></a></li>
+<li><a href="#4"><b class="cmd">ns_limits_list</b> <span class="opt">?<i class="arg">pattern</i>?</span></a></li>
+</ul>
+</div>
+</div>
+<div id="section1" class="section"><h2><a name="section1">Description</a></h2>
+<p>There are 4 limits which may be set to protect the server: the maximum number
+of running connections, the maximum number of waiting connections, max number
+of bytes the server will read, and the response timeout.</p>
+<p>The four limits are assembled into a bundle and the bundle is registered
+for one or more URLs.</p>
+<p>A <i class="term">default</i> limits bundle is created at server startup and applies to all
+URLs which do not have a more specific limit registered. The configuration
+options can be adjusted for the <i class="term">default</i> limits and any additional
+limits created at run-time.</p>
+</div>
+<div id="section2" class="section"><h2><a name="section2">COMMANDS</a></h2>
+<dl class="definitions">
+<dt><a name="1"><b class="cmd">ns_limits_set</b> <span class="opt">?<b class="option">-maxrun    <i class="arg">n</i></b>?</span> <span class="opt">?<b class="option">-maxwait   <i class="arg">n</i></b>?</span> <span class="opt">?<b class="option">-maxupload <i class="arg">n</i></b>?</span> <span class="opt">?<b class="option">-timeout   <i class="arg">t</i></b>?</span> <span class="opt">?--?</span> <i class="arg">limit</i></a></dt>
+<dd><p>Set the configuration options for a named limits bundle. If the limit does not
+exist it will be created. Default values are used for unspecified options.</p>
+<p>Limits bundles exist in a process-wide namespace. The single limit <i class="term">X</i> may
+be registered for more than one virtual server. This makes sense, as the
+resources being controlled are a limit of the machine the NaviServer is running
+on (or some subset of) and affects all virtual servers.</p>
+<dl class="options">
+<dt><b class="option">-maxrun</b> <i class="arg">n</i></dt>
+<dd><p>The maximum number of connections which can be running simultaneously for all
+URLs bound to this limit. Default: <i class="term">100</i>.</p></dd>
+<dt><b class="option">-maxwait</b> <i class="arg">n</i></dt>
+<dd><p>The maximum number of connections which can be simultaneously waiting to run
+because a thread is not available. Default: <i class="term">100</i>.</p></dd>
+<dt><b class="option">-maxupload</b> <i class="arg">bytes</i></dt>
+<dd><p>The maximum size, in bytes, which the server will accept for POST, PUT etc.
+requests. Default: <i class="term">10240000</i>.</p></dd>
+<dt><b class="option">-timeout</b> <i class="arg">t</i></dt>
+<dd><p>The number of seconds within which a request should run to completion.
+Default: <i class="term">100</i>.</p></dd>
+</dl></dd>
+<dt><a name="2"><b class="cmd">ns_limits_get</b> <i class="arg">limit</i></a></dt>
+<dd><p>Get the current configuration options and accumulated runtime statistics for
+the named limits bundle. The result is a list in Tcl array-get format which
+can be used, for example, to initialise a hash table.</p>
+<dl class="definitions">
+<dt>nrunning</dt>
+<dd><p>The number of connections currently running with a URL which is mapped to
+this limit bundle.</p></dd>
+<dt>nwaiting</dt>
+<dd><p>The number of active connections waiting to run because either there is no
+connection thread available or the <span class="opt">?maxrun?</span> limit has been reached.</p></dd>
+<dt>ntimeout</dt>
+<dd><p>Number of connections closed due to timeout.</p></dd>
+<dt>ndropped</dt>
+<dd><p>Number of connections dropped due to...</p></dd>
+<dt>noverflow</dt>
+<dd><p>Number of connections dropped due to ...</p></dd>
+<dt>maxrun</dt>
+<dd><p>The current <b class="option">maxrun</b> configuration option, which may be adjusted by a call
+to <b class="cmd">ns_limits_set</b> with the <b class="option">-maxrun</b> option.</p></dd>
+<dt>maxwait</dt>
+<dd><p>The current <b class="option">maxwait</b> configuration option, which may be adjusted by a call
+to <b class="cmd">ns_limits_set</b> with the <b class="option">-maxwait</b> option.</p></dd>
+<dt>maxupload</dt>
+<dd><p>The current <b class="option">maxupload</b> configuration option, which may be adjusted by a call
+to <b class="cmd">ns_limits_set</b> with the <b class="option">-maxupload</b> option.</p></dd>
+<dt>timeout</dt>
+<dd><p>The current <b class="option">timout</b> configuration option, which may be adjusted by a call
+to <b class="cmd">ns_limits_set</b> with the <b class="option">-timeout</b> option.</p></dd>
+</dl></dd>
+<dt><a name="3"><b class="cmd">ns_limits_register</b> <span class="opt">?<b class="option">-noinherit <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-server    <i class="arg">s</i></b>?</span> <span class="opt">?--?</span> <i class="arg">limit</i> <i class="arg">method</i> <i class="arg">url</i></a></dt>
+<dd><p>Register the named limits for the given URL.</p>
+<dl class="options">
+<dt><b class="option">-noinherit</b> <i class="arg">boolean</i></dt>
+<dd><p>If specified, a request URL such as /foo/bar will not match a limit registered
+on /foo. The default is false -- URL inheritence applies. The mechanism is the
+same as <b class="cmd">ns_register_proc</b>.</p></dd>
+<dt><b class="option">-server</b> <i class="arg">server</i></dt>
+<dd><p>The virtual server to use. Defaults to the server the command is run within if
+not specified. Limits are server global, but must be registered per-virtual
+server. This is mainly useful for startup scripts such as the main init.tcl
+bootstrap, which does not run within the context of a virtual server.</p></dd>
+</dl></dd>
+<dt><a name="4"><b class="cmd">ns_limits_list</b> <span class="opt">?<i class="arg">pattern</i>?</span></a></dt>
+<dd><p>List the names of all limit structures, or only those whose name matches the
+given glob pattern. The limit names can be passed to <b class="cmd">ns_limits_get</b> and
+<b class="cmd">ns_limits_register</b>.</p></dd>
+</dl>
+</div>
+<div id="section3" class="section"><h2><a name="section3">CONFIGURATION</a></h2>
+<p>The following configuration options are available to control limits at server
+startup in addition to the ns_limits commands which can be run once the the
+server has started:</p>
+<dl class="definitions">
+<dt>ns/limits</dt>
+<dd><p>Global limit names and descriptions:</p>
+<pre class="example">
+ns_section &quot;ns/limits&quot;
+ns_param   default   &quot;Default connections&quot;
+ns_param   slow      &quot;Slow connections&quot;
+</pre>
+</dd>
+<dt>ns/limit/$limitname</dt>
+<dd><p>Global limit configurations:</p>
+<pre class="example">
+ns_section &quot;ns/limit/default&quot;
+ns_param   maxrun    100
+ns_param   maxwait   100
+ns_param   maxupload 10240000
+ns_param   timeout   60
+ns_section &quot;ns/limit/slow&quot;
+ns_param   maxrun    10
+ns_param   maxwait   0
+</pre>
+</dd>
+<dt>ns/server/server1/limits</dt>
+<dd><p>Mapping virtual server URLs to global limits:</p>
+<pre class="example">
+ns_section &quot;ns/server/server1/limits&quot;
+ns_param   default   {GET /*}
+ns_param   slow      {GET /download}
+ns_param   slow      {GET /*.pdf}
+</pre>
+</dd>
+</dl>
+</div>
+<div id="section4" class="section"><h2><a name="section4">EXAMPLES</a></h2>
+<p>The following example shows how to prevent large file downloads (which may
+take some time to complete) from using up all available connection slots,
+preventing other pages from being served.</p>
+<p>The large files are loacted in the <i class="term">/download</i> directory. We also want to
+control large PDF files which are located throughout the URL hierarchy using
+the same limit.</p>
+<p>With this configuration there can be at most 10 simultaneous downloads of PDF
+files or files in the <i class="term">/download</i> directory, in total, at any one time.
+Reuquests for other URLs will have the <i class="term">default</i> limit applied.</p>
+<pre class="example">
+<b class="cmd">ns_limits_set</b> -maxrun 10 -maxwait 0 -- slow
+<b class="cmd">ns_limits_register</b> slow GET /download
+<b class="cmd">ns_limits_register</b> slow GET /*.pdf
+</pre>
+<p>The following example proc can be used to log statistics on failed requests
+peridoically:</p>
+<pre class="example">
+proc log_limits {} {
+    foreach limit [<b class="cmd">ns_limits_list</b>] {
+        array set l [<b class="cmd">ns_limits_get</b> $limit]
+        ns_log notice &quot;limit[$limit]: &quot; \
+            &quot;timeouts: $l(ntimeout) drops: $l(ndropped) overflows: $l(noverflow)&quot;
+    }
+}
+ns_schedule_proc 3600 log_limits
+</pre>
+</div>
+<div id="see-also" class="section"><h2><a name="see-also">See Also</a></h2>
+<p><a href="ns_server.html">ns_server</a></p>
+</div>
+<div id="keywords" class="section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key9">configuration</a>, <a href="../../index.html#key69">limit</a>, <a href="../../index.html#key67">resource</a>, <a href="../../index.html#key68">timeout</a>, <a href="../../index.html#key58">upload</a></p>
+</div>
+<div id="man-footer">
+  
+</div>
+</div></body></html>

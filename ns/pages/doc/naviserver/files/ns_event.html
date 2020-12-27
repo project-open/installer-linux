@@ -1,0 +1,80 @@
+
+<html><head>
+<title>ns_event - NaviServer Built-in Commands</title>
+<link rel="stylesheet" href="../man.css" type="text/css">
+</head>
+<! -- Generated from file '/usr/local/src/naviserver/doc/html/naviserver/files/ns_event.html' by tcllib/doctools with format 'html'
+   -->
+<! -- CVS: $Id$ ns_event.n
+   -->
+<body><div class="doctools">
+<div id="man-header">
+  <a href="http://wiki.tcl.tk/2090"><img
+     src="http://naviserver.sourceforge.net/ns-icon-16.png"> <strong>NaviServer</strong></a>
+  - programmable web server
+</div>
+<br>
+<hr> [
+  <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+] <hr>
+<h1 class="title">ns_event(n) 4.99.8 naviserver &quot;NaviServer Built-in Commands&quot;</h1>
+<div id="name" class="section"><h2><a name="name">Name</a></h2>
+<p>ns_event - Manage events</p>
+</div>
+<div id="toc" class="section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="toc">
+<li class="section"><a href="#toc">Table Of Contents</a></li>
+<li class="section"><a href="#synopsis">Synopsis</a></li>
+<li class="section"><a href="#section1">Description</a></li>
+<li class="section"><a href="#section2">COMMANDS</a></li>
+<li class="section"><a href="#section3">EXAMPLES</a></li>
+</ul>
+</div>
+<div id="synopsis" class="section"><h2><a name="synopsis">Synopsis</a></h2>
+<div class="synopsis">
+<ul class="syntax">
+<li><a href="#1"><b class="cmd">ns_event</b> <i class="arg">broadcast</i> <i class="arg">eventid</i></a></li>
+<li><a href="#2"><b class="cmd">ns_event</b> <i class="arg">create</i></a></li>
+<li><a href="#3"><b class="cmd">ns_event</b> <i class="arg">destroy</i> <i class="arg">eventid</i></a></li>
+<li><a href="#4"><b class="cmd">ns_event</b> <i class="arg">set</i> <i class="arg">eventid</i></a></li>
+<li><a href="#5"><b class="cmd">ns_event</b> <i class="arg">wait</i> <i class="arg">eventid</i> <i class="arg">lockid</i> <span class="opt">?<i class="arg">timeout</i>?</span></a></li>
+</ul>
+</div>
+</div>
+<div id="section1" class="section"><h2><a name="section1">Description</a></h2>
+<p>ns_event broadcast wakes up all threads waiting on the specified event. The eventid argument
+is the event ID returned by ns_event create when the event was created.</p>
+<p>ns_event create initializes an event and returns an event ID for the new event.</p>
+<p>ns_event destroy frees the resources associated with the specified event. The eventid 
+argument is the event ID returned by ns_event create when the event was created.</p>
+<p>ns_event set wakes up the specified event. The eventid argument is the event ID returned by 
+ns_event create when the event was created.</p>
+<p>ns_event wait waits for the specified event for a specified time. The eventid argument is 
+the event ID returned by ns_event create when the event was created. The lockid argument 
+is the id of a mutex lock. The timeout argument is the time to wait in seconds. The return 
+value is 0 (zero) if the event timed out and 1(one) if the event was woken up.</p>
+</div>
+<div id="section2" class="section"><h2><a name="section2">COMMANDS</a></h2>
+<dl class="definitions">
+<dt><a name="1"><b class="cmd">ns_event</b> <i class="arg">broadcast</i> <i class="arg">eventid</i></a></dt>
+<dd></dd>
+<dt><a name="2"><b class="cmd">ns_event</b> <i class="arg">create</i></a></dt>
+<dd></dd>
+<dt><a name="3"><b class="cmd">ns_event</b> <i class="arg">destroy</i> <i class="arg">eventid</i></a></dt>
+<dd></dd>
+<dt><a name="4"><b class="cmd">ns_event</b> <i class="arg">set</i> <i class="arg">eventid</i></a></dt>
+<dd></dd>
+<dt><a name="5"><b class="cmd">ns_event</b> <i class="arg">wait</i> <i class="arg">eventid</i> <i class="arg">lockid</i> <span class="opt">?<i class="arg">timeout</i>?</span></a></dt>
+<dd></dd>
+</dl>
+</div>
+<div id="section3" class="section"><h2><a name="section3">EXAMPLES</a></h2>
+<pre class="example">
+</pre>
+</div>
+<div id="man-footer">
+  
+</div>
+</div></body></html>

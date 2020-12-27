@@ -1,0 +1,142 @@
+
+<html><head>
+<title>ns_cookie - NaviServer Built-In Commands</title>
+<link rel="stylesheet" href="../man.css" type="text/css">
+</head>
+<! -- Generated from file '/usr/local/src/naviserver/doc/html/naviserver/files/ns_cookie.html' by tcllib/doctools with format 'html'
+   -->
+<! -- CVS: $Id$ ns_cookie.n
+   -->
+<body><div class="doctools">
+<div id="man-header">
+  <a href="http://wiki.tcl.tk/2090"><img
+     src="http://naviserver.sourceforge.net/ns-icon-16.png"> <strong>NaviServer</strong></a>
+  - programmable web server
+</div>
+<br>
+<hr> [
+  <a href="../../toc.html">Main Table Of Contents</a>
+| <a href="../toc.html">Table Of Contents</a>
+| <a href="../../index.html">Keyword Index</a>
+] <hr>
+<h1 class="title">ns_cookie(n) 4.99.8 naviserver &quot;NaviServer Built-In Commands&quot;</h1>
+<div id="name" class="section"><h2><a name="name">Name</a></h2>
+<p>ns_cookie - HTTP cookies</p>
+</div>
+<div id="toc" class="section"><h2><a name="toc">Table Of Contents</a></h2>
+<ul class="toc">
+<li class="section"><a href="#toc">Table Of Contents</a></li>
+<li class="section"><a href="#synopsis">Synopsis</a></li>
+<li class="section"><a href="#section1">Description</a></li>
+<li class="section"><a href="#section2">COMMANDS</a></li>
+<li class="section"><a href="#section3">OPTIONS</a></li>
+<li class="section"><a href="#section4">EXAMPLES</a></li>
+<li class="section"><a href="#see-also">See Also</a></li>
+<li class="section"><a href="#keywords">Keywords</a></li>
+</ul>
+</div>
+<div id="synopsis" class="section"><h2><a name="synopsis">Synopsis</a></h2>
+<div class="synopsis">
+<ul class="syntax">
+<li><a href="#1"><b class="cmd">ns_setcookie</b> <span class="opt">?<b class="option">-discard <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-domain <i class="arg">d</i></b>?</span> <span class="opt">?<b class="option">-expires <i class="arg">t</i></b>?</span> <span class="opt">?<b class="option">-path <i class="arg">p</i></b>?</span> <span class="opt">?<b class="option">-replace <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-scriptable <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-secure <i class="arg">bool</i></b>?</span> <span class="opt">?<i class="arg">--</i>?</span> <i class="arg">name</i> <i class="arg">data</i></a></li>
+<li><a href="#2"><b class="cmd">ns_getcookie</b> <span class="opt">?<b class="option">-include_set_cookie <i class="arg">bool</i></b>?</span> <span class="opt">?<i class="arg">--</i>?</span> <i class="arg">name</i> <span class="opt">?<i class="arg">default</i>?</span></a></li>
+<li><a href="#3"><b class="cmd">ns_deletecookie</b> <span class="opt">?<b class="option">-domain <i class="arg">d</i></b>?</span> <span class="opt">?<b class="option">-path <i class="arg">p</i></b>?</span> <span class="opt">?<b class="option">-replace <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-secure <i class="arg">bool</i></b>?</span> <span class="opt">?<i class="arg">--</i>?</span> <i class="arg">name</i></a></li>
+</ul>
+</div>
+</div>
+<div id="section1" class="section"><h2><a name="section1">Description</a></h2>
+<p>Cookies are small pieces of data which the server sends to the <i class="term">user agent</i>
+and the user agent sends back during subsequent requests. You can use this
+mechanism to save state between otherwise statelss HTTP requests.</p>
+<p>Cookie size limits are user agent dependent. Practically, as cookies are sent
+with every request to the server (for which the optional <i class="term">domain</i> and
+<i class="term"><a href="../../index.html#key46">path</a></i> match), size should be kept to a minimum.</p>
+<p>These commands implement the original version 1 Netscape cookie protocol which
+is widely supported by user agents.</p>
+</div>
+<div id="section2" class="section"><h2><a name="section2">COMMANDS</a></h2>
+<dl class="definitions">
+<dt><a name="1"><b class="cmd">ns_setcookie</b> <span class="opt">?<b class="option">-discard <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-domain <i class="arg">d</i></b>?</span> <span class="opt">?<b class="option">-expires <i class="arg">t</i></b>?</span> <span class="opt">?<b class="option">-path <i class="arg">p</i></b>?</span> <span class="opt">?<b class="option">-replace <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-scriptable <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-secure <i class="arg">bool</i></b>?</span> <span class="opt">?<i class="arg">--</i>?</span> <i class="arg">name</i> <i class="arg">data</i></a></dt>
+<dd><p>Send <i class="arg">data</i> to the user agent as a cookie, using <i class="arg">name</i> as the
+identifier. The user agent will send the cookie data back to the server
+during subsequent requests for which the <i class="arg">domain</i> and <i class="arg">path</i> match,
+if it has not expired. If the provided domain is empty, it is ignored.</p>
+<p>A cookie is identified by a signature which is made up of it's name, domain,
+path and secure flag. A cookie named <i class="term">foo</i> with path <i class="term">/x/y</i> is a
+different cookie than one named <i class="term">foo</i> with path <i class="term">/x/y/z</i>. During a
+request for the URL <i class="term">/x/y/z</i> both cookies named <i class="term">foo</i> are sent.</p>
+<p>The <i class="arg">data</i> will be URL-encoded to escape special characters.
+<b class="cmd">ns_getcookie</b> correctly reverses the encoding.</p></dd>
+<dt><a name="2"><b class="cmd">ns_getcookie</b> <span class="opt">?<b class="option">-include_set_cookie <i class="arg">bool</i></b>?</span> <span class="opt">?<i class="arg">--</i>?</span> <i class="arg">name</i> <span class="opt">?<i class="arg">default</i>?</span></a></dt>
+<dd><p>Get the cookie data identified by <i class="arg">name</i>. If no such cookie exists then
+<i class="arg">default</i> is returned. If <i class="arg">default</i> is not given and no such cookie
+exists, an error is raised. When the option -include_set_cookie is set
+true, then this command will search as well in the cookies being
+currently set in the output headers.</p>
+<p>Only the first cookie identified by <i class="arg">name</i> is returned. If two cookies
+with the same name are sent by the user agent, each with a different <i class="arg">domain</i>
+and/or <i class="arg">path</i>, which cookie data is returned depends on the user agent.</p>
+<p>When using <i class="arg">domain</i> or <i class="arg">path</i> to restrict cookies, use a unique name for
+each restricted cookie.</p></dd>
+<dt><a name="3"><b class="cmd">ns_deletecookie</b> <span class="opt">?<b class="option">-domain <i class="arg">d</i></b>?</span> <span class="opt">?<b class="option">-path <i class="arg">p</i></b>?</span> <span class="opt">?<b class="option">-replace <i class="arg">bool</i></b>?</span> <span class="opt">?<b class="option">-secure <i class="arg">bool</i></b>?</span> <span class="opt">?<i class="arg">--</i>?</span> <i class="arg">name</i></a></dt>
+<dd><p>Instruct the client to delete the cookie data identified by <i class="arg">name</i>. The
+complete cookie signature including <i class="arg">domain</i> and <i class="arg">path</i> must match
+for the cookie to be deleted. If the provided domain is empty, it is ignored.</p></dd>
+</dl>
+</div>
+<div id="section3" class="section"><h2><a name="section3">OPTIONS</a></h2>
+<dl class="options">
+<dt><b class="option">-discard</b> <i class="arg">boolean</i></dt>
+<dd><p>If the discard option is true then the cookie will be automaticalled
+deleted at the end of the current session (when the user agent terminates).</p></dd>
+<dt><b class="option">-secure</b> <i class="arg">boolean</i></dt>
+<dd><p>If the secure option is true then the the cookie will only be sent back to the
+server when the client uses a secure (<i class="term">TLS</i>/<i class="term">SSL</i>) connection.</p></dd>
+<dt><b class="option">-replace</b> <i class="arg">boolean</i></dt>
+<dd><p>If the replace option is true the cookie being set or deleted is as
+well deleted from the current output header set if provided there.
+The default value is false.</p></dd>
+<dt><b class="option">-scriptable</b> <i class="arg">boolean</i></dt>
+<dd><p>If the scriptable option is false or not given the cookie is unavailable to
+javascript on the client. This can prevent cross site scripting attacks (XSS) on
+clients which support the <i class="term">HttpOnly</i> option. Set <i class="arg">-scriptable</i> to true
+if you need to access the cookie via javascript.</p></dd>
+<dt><b class="option">-domain</b> <i class="arg">domain</i></dt>
+<dd><p>Restrict the cookie to a domain name, such as <i class="term">example.com</i>. The
+current domain is implied if none is specified.</p></dd>
+<dt><b class="option">-path</b> <i class="arg">path</i></dt>
+<dd><p>Restrict the cookie to a URL path such as <i class="term">/foo/bar</i>. If no path is
+specified then the cookie will be back sent to the server for all requests.
+If a path is specified the cookie will only be sent back for requests which
+match the specified path, or a sub-path.</p></dd>
+<dt><b class="option">-expires</b> <i class="arg">time</i></dt>
+<dd><p>The cookie will expire in <i class="arg">time</i> seconds, after which the client will no
+longer send the cookie back to the server. If <i class="arg">time</i> is large it is treated
+as the absolute time in the future when the cookie should expire. The special
+value <em>-1</em> may be used to indicate that the cookie should never expire.</p>
+<p>The expiry time is valid across browser sessions.  If no expiry is
+specified then the cookie will expire when the browser session ends,
+which is ususally when the user closes their browser.</p></dd>
+</dl>
+</div>
+<div id="section4" class="section"><h2><a name="section4">EXAMPLES</a></h2>
+<p>Track all user agents which ever vist out site:</p>
+<pre class="example">
+proc browser_tracking_filter {} {
+    if {![<b class="cmd">ns_getcookie</b> first_visit 0]} {
+        <b class="cmd">ns_setcookie</b> -expires -1 -- first_visit [clock seconds]
+    }
+}
+ns_register_filter preauth GET /* browser_tracking_filter
+</pre>
+</div>
+<div id="see-also" class="section"><h2><a name="see-also">See Also</a></h2>
+<p>Ns_Cookie(3), <a href="ns_cookiecharset.html">ns_cookiecharset</a></p>
+</div>
+<div id="keywords" class="section"><h2><a name="keywords">Keywords</a></h2>
+<p><a href="../../index.html#key56">cookie</a>, <a href="../../index.html#key55">session</a></p>
+</div>
+<div id="man-footer">
+  
+</div>
+</div></body></html>

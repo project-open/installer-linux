@@ -1,0 +1,163 @@
+# Emacs mode:  -*-Makefile-*-
+
+# The contents of this file are subject to the Mozilla Public License
+# Version 1.1 (the "License"); you may not use this file except in
+# compliance with the License. You may obtain a copy of the License at
+# http://www.mozilla.org/.
+#
+# Software distributed under the License is distributed on an "AS IS"
+# basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+# the License for the specific language governing rights and limitations
+# under the License.
+#
+# The Original Code is AOLserver Code and related documentation
+# distributed by AOL.
+#
+# The Initial Developer of the Original Code is America Online,
+# Inc. Portions created by AOL are Copyright (C) 1999 America Online,
+# Inc. All Rights Reserved.
+#
+# Alternatively, the contents of this file may be used under the terms
+# of the GNU General Public License (the "GPL"), in which case the
+# provisions of GPL are applicable instead of those above.  If you wish
+# to allow use of your version of this file only under the terms of the
+# GPL and not to allow others to use your version of this file under the
+# License, indicate your decision by deleting the provisions above and
+# replace them with the notice and other provisions required by the GPL.
+# If you do not delete the provisions above, a recipient may use your
+# version of this file under either the License or the GPL.
+#
+
+#
+# Makefile.global.in --
+#
+#     Common and platform-specific make variables to be included
+#     by other makefiles.
+#
+
+NAVISERVER       = /usr/local/ns
+srcdir           = /usr/local/src/naviserver-4.99.8
+
+NS_PATCH_LEVEL   = "4.99.8"
+
+
+RM               = /bin/rm -Rf
+MKDIR            = /bin/mkdir -p
+CP               = /bin/cp -pR
+
+ifdef NSBUILD
+    INSTALL_SH	 = $(srcdir)/install-sh -c
+else
+    INSTALL_SH	 = $(INSTBIN)/install-sh -c
+endif
+INSTALL_DATA	 = $(INSTALL_SH) -m 644
+
+RANLIB           = ranlib
+LIBEXT           = .so
+TCL_EXEC_PREFIX  = /usr/local/ns
+LIB_RUNTIME_DIR  =
+LDLIB            = ${CC} -shared ${CFLAGS} ${LDFLAGS_DEFAULT}
+LDSO             = $(LDLIB)
+CCRFLAG          = -Wl,-rpath,${LIB_RUNTIME_DIR}
+LDRFLAG          = -Wl,-rpath,${LIB_RUNTIME_DIR}
+CCRPATH         += $(CCRFLAG):$(INSTLIB)
+LDRPATH         += $(LDRFLAG):$(INSTLIB)
+CC               = $(PURIFY) gcc
+CFLAGS_DEBUG     = -g
+CFLAGS_OPTIMIZE  = -O2 -fomit-frame-pointer
+CFLAGS_WARNING   = -Wall
+CFLAGS_INCLUDE   = -I$(INCDIR) -I"/usr/local/ns/include"
+CFLAGS_EXTRA     = -fPIC  -pipe 
+DEFS             = -DHAVE_CONFIG_H
+CFLAGS_DEFAULT   = -O2 -fomit-frame-pointer -DNDEBUG
+CFLAGS          += $(CFLAGS_DEFAULT) $(CFLAGS_WARNING) $(CFLAGS_EXTRA) $(CFLAGS_INCLUDE)  $(DEFS)
+LIBS		 = -lgcc_s 
+DL_LIBS		 = 
+MATH_LIBS	 = -lieee -lm
+
+
+# The Windows and Unix build systems treat $(LIBNM) differently, so we
+# arrange things so that the final output of library names is the same
+# on both platforms.  For nsd on Windows, we must use LIBNM = libnsd.
+# (See also the comments in nsd/Makefile.)  Unix must instead use
+# LIBNM = nsd here, and the lib prefix gets added elsewhere.  Since
+# this file is Unix-only, we need this simple fix-up:
+
+ifeq (libnsd,$(LIBNM))
+  LIBNM := nsd
+endif
+
+ifndef NSBUILD
+    LDFLAGS += -L$(NAVISERVER)/lib
+    NSLIBS  += -lnsthread -lnsd
+    INCDIR   = $(NAVISERVER)/include
+    CFLAGS  += 
+else
+    LDFLAGS += -L../nsthread -L../nsd -L../nsdb
+    INCDIR   = ../include
+	ifeq (nsd,$(LIBNM))
+		CFLAGS += 
+		NSLIBS += -lz -lcrypt
+	endif
+    ifneq (nsthread,$(LIBNM))
+        NSLIBS += -lnsthread
+        ifneq (nsd,$(LIBNM))
+            ifneq (nsthreadtest,$(PGM))
+                ifeq (nsdbtest,$(MODNAME))
+                    NSLIBS += -lnsd -lnsdb
+                else
+                    NSLIBS += -lnsd
+                endif
+            endif
+        endif
+    endif
+endif
+
+NSLIBS      += -L/usr/local/ns/lib -ltcl8.5 ${DL_LIBS} ${LIBS} ${MATH_LIBS}  -Wl,--export-dynamic  -L/usr/local/ns/lib
+CCLIBS       = $(NSLIBS)
+
+# Install directories
+INSTBIN      = $(NAVISERVER)/bin
+INSTLIB      = $(NAVISERVER)/lib
+INSTHDR      = $(NAVISERVER)/include
+INSTMOD      = $(NAVISERVER)/modules
+INSTTCL      = $(NAVISERVER)/tcl
+INSTSRV      = $(NAVISERVER)/
+INSTSRVMOD   = $(INSTSRV)/modules
+INSTSRVPAG   = $(INSTSRV)/pages
+
+# Platform-specific options.
+uname = $(shell uname -a)
+
+#
+# Solaris, OpenSolaris
+#
+ifneq (,$(findstring SunOS,$(uname)))
+
+    # Solaris 2.6+
+    ifneq (,$(findstring 5.6,$(uname)))
+        NSLIBS += -lthread -lposix4
+    else
+        NSLIBS += -lrt
+    endif
+
+    # OpenSolaris (e.g. OmniOS)
+    ifneq (,$(findstring 5.11,$(uname)))
+        NSLIBS += -lsendfile
+    endif
+endif
+
+#
+# For static linking on Darwin, link modules
+# against server image.
+#
+
+ifneq (,$(findstring Darwin,$(uname)))
+    ifeq ($(STATIC_BUILD), 1)
+        ifdef NSBUILD
+            LDSO += -bundle_loader $(srcdir)/nsd/nsd
+        else
+            LDSO += -bundle_loader $(NAVISERVER)/bin/nsd
+        endif
+    endif
+endif
