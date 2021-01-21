@@ -3,6 +3,7 @@
 	name = Project Open
 [credential]
 	helper = cache --timeout 3600
+	helper = cache
 [pull]
 	rebase = false
 [core]
