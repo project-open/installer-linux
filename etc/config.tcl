@@ -20,10 +20,10 @@ set httpport		8000
 set httpsport		8443 
 
 
-# Please enter the fully qualified hostname
+# Please enter the fully qualified hostname.
 # hostname is now (]po[ V5.1 and higher) used for redirection.
 #set hostname		[ns_info hostname]
-set hostname		"po51demo.project-open.net"
+set hostname		"project-open.project-open.com"
 
 # listen address for Web server
 set address		"0.0.0.0"
