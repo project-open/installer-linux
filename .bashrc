@@ -6,3 +6,6 @@ if [ -f /etc/bashrc ]; then
 fi
 
 # User specific aliases and functions
+
+alias "l=ls -als"
+export EDITOR=emacs
