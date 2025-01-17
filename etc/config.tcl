@@ -1,6 +1,6 @@
 ###################################################################### 
 #
-# ]project-open[ V5.1 Configuration File
+# ]project-open[ V5.2 Configuration File
 #
 # - Using PostgreSQL 10.x
 # - Using OpenACS 5.9.1
@@ -21,15 +21,15 @@ set httpsport		8443
 
 
 # Please enter the fully qualified hostname.
-# hostname is now (]po[ V5.1 and higher) used for redirection.
+# hostname is now (]po[ V5.2 and higher) used for redirection.
 #set hostname		[ns_info hostname]
-set hostname		"project-open.project-open.com"
+set hostname		"project-open-v52.project-open.net"
 
 # listen address for Web server
 set address		"0.0.0.0"
 
 set server		projop
-set servername		"\]project-open\[ V5.1"
+set servername		"\]project-open\[ V5.2"
 set serverroot		/web/${server}
 set logroot		$serverroot/log/
 
