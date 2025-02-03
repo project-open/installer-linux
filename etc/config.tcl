@@ -51,7 +51,7 @@ set max_file_upload_min	5
 
 # Debug is turned on for demo servers. Please turn off for
 # performance critical production installations.
-set debug		true
+set debug		false
 set dev			false
 
 
