@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+
+# --------------------------------------------------------------
+# export-dbs
+# Copyright 2009-2019 ]project-open[
+# Frank Bergmann <frank.bergmann@project-open.com>
+# Licensed under GPL V2.0 or higher
+# --------------------------------------------------------------
+
+# Constants, variables and parameters
+#
+my $debug =     1;
+
+# email for error reports, you have to quote the "@"
+my $email =     "sysadmin@tigerpond.com";
+
+# Plain-text password for encrypting backups stored in the cloud.
+# Should not contain characters that need quoting in Perl/Bash.
+my $gpg_pass =  'secret';
+
+# Where to store backups
+#
+my $exportdir = "/var/backup";
+my $logdir =    "/var/log/postgres";
+
+
+# System commands
+#
+my $psql =      "/usr/bin/psql";
+my $pg_dump =   "/usr/bin/pg_dump";
+my $bzip2 =     "/usr/bin/bzip2";
+my $gpg =       "/usr/bin/gpg2";
+
+my $pg_owner =  "postgres";
+my $computer_name = `hostname`;
+my $time =      `/bin/date +\%Y\%m\%d.\%H\%M`;
+my $weekday =   `/bin/date +%w`;
+
+chomp($computer_name);
+chomp($time);
+chomp($weekday);
+
+open(DBS, "su - $pg_owner -c '$psql -l' |");
+while (my $db_line=<DBS>) {
+
+        chomp($db_line);
+        $db_line =~ /^\s*(\w*)/;
+        my $db_name = $1;
+
+        next if (length($db_name) < 2);
+        next if ($db_name =~ /^\s$/);
+        next if ($db_name =~ /^List$/);
+        next if ($db_name =~ /^Name$/);
+
+        next if ($db_name =~ /^postgres$/);
+        next if ($db_name =~ /^template0$/);
+        next if ($db_name =~ /^template1$/);
+
+        my $file = "$exportdir/pgback.$computer_name.$db_name.$time.sql";
+        my $log_file = "$logdir/export-dbs.$db_name.log";
+        my $cmd = "su - $pg_owner --command='$pg_dump $db_name -c -O -F p -f $file' > $log_file 2>&1";
+        print "export-dbs: $cmd\n" if ($debug);
+        system $cmd;
+
+        my $cmd2 = "su - $pg_owner --command='$bzip2 $file'";
+        print "export-dbs: $cmd2\n" if ($debug);
+        system $cmd2;
+
+        my $cmd3 = "echo $gpg_pass | $gpg --symmetric --batch --passphrase-fd 0 $file.bz2";
+        print "export-dbs: $cmd3\n" if ($debug);
+        system $cmd3;
+
+        # Tar the entire web server to backup area, except for packages and filestorage backup.
+        my $file9 = "$exportdir/webback.$computer_name.$db_name.$time.tgz";
+        my $cmd9 = "tar --exclude='/web/$db_name/log' --exclude='/web/$db_name/filestorage/backup' -c -z -f $file9 /web/$db_name/";
+        print "export-dbs: $cmd9\n" if ($debug);
+        system $cmd9;
+
+        # Analyze log file and send out error reports
+        my $err_count = `cat $log_file | grep -i 'error:' | wc -l`;
+        chomp($err_count);
+        if ($err_count > 0) {
+            system "cat $log_file | grep -i 'error:' | mail -s \"]project-open[ Backup Errors\" $email ";
+        }
+
+}
+close(DBS);
+

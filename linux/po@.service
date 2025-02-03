@@ -1,0 +1,20 @@
+[Unit]
+Description=Project Open as user %I
+After=postgresql.service network.target
+Wants=postgresql.service
+
+[Service]
+Type=forking
+PIDFile=/web/%i/log/nsd.pid
+
+ExecStartPre=/bin/rm -f /web/%i/log/nsd.pid
+ExecStart=/usr/local/ns/bin/nsd -t /web/%i/etc/config.tcl -u %i -g %i &
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s 9 $MAINPID
+
+Restart=always
+KillMode=process
+
+[Install]
+WantedBy=multi-user.target
+
