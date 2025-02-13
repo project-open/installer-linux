@@ -91,7 +91,7 @@ ns_section ns/parameters
 	ns_param	 debug			$debug
 
 	ns_param	 logroll		on
-	ns_param	 logmaxbackup		100
+	ns_param	 logmaxbackup		5
 	ns_param	 logdebug		$debug
 	ns_param	 logdev			$dev
 
