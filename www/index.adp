@@ -98,8 +98,8 @@ function setCredentials (email, password) {
 	    <tr><td>
 		<font color=red>
 		  &nbsp;<br>
-		  Please select one of the demo accounts from the left hand side<br>
-		  and click on the "Log In" button.<br>
+		  Please select one of the demo accounts from the left<br>
+		  and click on it for automatic login.<br>
 		</font>
 	    </td></tr>
 	  </table>
