@@ -25,7 +25,18 @@ set query "
 		p.demo_group,
 		p.demo_sort_order,
 		im_name_from_user_id(p.person_id) as user_name,
-		lower(replace(im_name_from_user_id(p.person_id), ' ', '_')) as lower_name
+		lower(replace(im_name_from_user_id(p.person_id), ' ', '_')) as lower_name,
+		CASE
+			WHEN demo_group = 'Administrators' THEN 10
+			WHEN demo_group = 'Senior Managers' THEN 20
+			WHEN demo_group = 'Finance' THEN 30
+			WHEN demo_group = 'Project Managers' THEN 40
+			WHEN demo_group = 'Sales' THEN 50
+			WHEN demo_group = 'Employees' THEN 70
+			WHEN demo_group = 'Customers' THEN 80
+			WHEN demo_group = 'Freelancers' THEN 90
+
+		ELSE 99 END as demo_group_sort_order
         from	persons p,
 		parties pa,
 		users u
@@ -33,9 +44,9 @@ set query "
 		and p.person_id = u.user_id
 		and demo_password is not null
         order by
+		demo_group_sort_order,
 		p.demo_group,
 		u.user_id
-	LIMIT 20
 "
 set last_group ""
 set last_group_count 0
@@ -52,9 +63,9 @@ db_multirow -extend {before_html after_html} users users_query $query {
 	switch $demo_group {
 	    Accounting { set group_comment "Accounting - Financial permissions" }
 	    Administrators { set group_comment "Administrators - Maximum permissions" }
-	    Customers { set group_comment "Customers - Can only see their stuff" }
+	    Customers { set group_comment "Customers - Can only see their projects" }
 	    Employees { set group_comment "Employees - Normal permissions" }
-	    Freelancers { set group_comment "Freelancers - Can only see their stuff" }
+	    Freelancers { set group_comment "Freelancers - Can only see their projects" }
 	    "Project Mangers" { set group_comment "Project Managers - Creating projects" }
 	    "Senior Managers" { set group_comment "Senior Managers - All permissions except admin" }
 	    Sales { set group_comment "Sales - Permissions on presales pipeline" }
