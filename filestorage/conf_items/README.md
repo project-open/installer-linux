@@ -1,0 +1,1 @@
+~/filestorage/conf_items/ is used to store documents related to configuration items / inventory.

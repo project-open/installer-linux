@@ -1,0 +1,1 @@
+~/filestorage/projects/ is used to store documents related to projects.

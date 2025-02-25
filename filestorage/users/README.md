@@ -1,0 +1,1 @@
+~/filestorage/users/ is used to store documents related to users such as portraits or employment contracts.

@@ -1,0 +1,1 @@
+~/filestorage/tickets/ is used to store documents related to tickets such as screenshots.

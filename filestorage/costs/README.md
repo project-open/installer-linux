@@ -1,0 +1,1 @@
+~/filestorage/costs/ is used to store documents related to cost items such as a scanned original.

@@ -1,0 +1,1 @@
+~/filestorage/home/ is used to store documents for the entire company such as manuals.

@@ -1,0 +1,1 @@
+~/filestorage/companies/ is used to store documents related to customers/providers.
