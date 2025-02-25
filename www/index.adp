@@ -156,6 +156,14 @@ function setCredentials (email, password) {
 
 </if>
 
+<%= [im_component_bay top] %>
+<table width="100%">
+    <tr valign="top">
+	<td width="50%"><%= [im_component_bay left] %></td>
+	<td width="50%"><%= [im_component_bay right] %></td>
+    </tr>
+</table>
+<%= [im_component_bay bottom] %>
 
   </div>
 </div>
