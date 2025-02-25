@@ -57,7 +57,7 @@ function setCredentials (email, password) {
 	  
 	  <multiple name=users>
 	    @users.before_html;noquote@
-	    <table border="0" cellpadding="0" cellspacing="0" style="cursor:pointer"><colgroup><col width="80px"><col width="230px"></colgroup>
+	    <table border="0" cellpadding="2" cellspacing="2" style="cursor:pointer"><colgroup><col width="80px"><col width="230px"></colgroup>
 	      <tr class="off" 
 		  onmouseover="this.className='on';setImage('@users.lower_name@', '/intranet/images/demoserver/@users.lower_name@.jpg')" 
 		  onmouseout="this.className='off';setImage('@users.lower_name@','/intranet/images/demoserver/@users.lower_name@_bw.jpg')"
